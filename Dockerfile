@@ -26,8 +26,6 @@
 #####
 # Building: sudo docker build -t batou99/ubuntu-dev .
 
-# Open it up: sudo docker run -t -i -p 80:80 bash -l
-
 FROM dockerfile/supervisor
 MAINTAINER Lorenzo Lopez <lorenzo.lopez@intec.es>
 
