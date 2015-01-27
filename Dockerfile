@@ -67,7 +67,10 @@ ENV PATH $PATH:/home/dev
 ENV TERM screen-256color
 
 # All rvm commands need to be run as bash -l or they won't work.
-RUN \curl -L https://get.rvm.io | bash -s stable
+# Add GPG key for RVM.
+RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+# Install RVM.
+RUN \curl -sSL https://get.rvm.io | bash -s stable
 RUN echo 'source /usr/local/rvm/scripts/rvm' >> ~/bash.bashrc
 USER root
 RUN /bin/bash -l -c 'rvm requirements'
