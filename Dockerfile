@@ -51,9 +51,7 @@ RUN npm -g install yo
 
 RUN mkdir -p /var/log/nginx/
 # Install rvm, ruby, rails, rubygems, nginx
-ENV RUBY_VERSION 2.1.2
-ENV RAILS_VERSION 4.0.0
-ENV PASSENGER_VERSION 4.0.37
+ENV RUBY_VERSION 2.2.0
 
 # User settings
 RUN useradd -d /home/dev -m dev 
@@ -77,17 +75,16 @@ RUN echo 'source /usr/local/rvm/scripts/rvm' >> ~/bash.bashrc
 USER root
 RUN /bin/bash -l -c 'rvm requirements'
 USER dev
-RUN /bin/bash -l -c 'rvm install 2.1.2'
+RUN /bin/bash -l -c 'rvm install 2.2.0'
 RUN /bin/bash -l -c 'rvm use $RUBY_VERSION --default'
 RUN /bin/bash -l -c 'rvm rubygems current'
 RUN /bin/bash -l -c 'gem install bundler --no-ri --no-rdoc'
-RUN /bin/bash -l -c 'gem install rails --version=$RAILS_VERSION'
-RUN /bin/bash -l -c 'gem install passenger --version $PASSENGER_VERSION'
+
 USER root
-#RUN /bin/bash -l -c 'ulimit -s unlimited && passenger-install-nginx-module --auto-download --auto --prefix=/opt/nginx'
 RUN chsh -s /bin/zsh dev
 
 USER dev
+
 # Clone oh-my-zsh
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/
 RUN git clone https://github.com/Batou99/dotfiles ~/.vim
