@@ -31,25 +31,20 @@ MAINTAINER Lorenzo Lopez <lorenzo.lopez@intec.es>
 
 ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-# Setup all needed dependencies
-RUN apt-get update
-RUN apt-get -y install curl libcurl4-gnutls-dev git libxslt-dev libxml2-dev libpq-dev libffi-dev vim-nox git software-properties-common python-software-properties zsh tmux ctags sudo openssh-server net-tools inetutils-ping xdg-utils ack-grep libnotify-bin mysql-client libmysqlclient-dev ruby-dev
+# Add node repository to sources.list and update apt
+RUN add-apt-repository -y ppa:chris-lea/node.js && apt-get update
 
 # Install Git 2.x.
 # This isn't available in the main repo so we get it from a PPA.
 # Source: http://unix.stackexchange.com/a/170831 
 RUN sudo add-apt-repository ppa:git-core/ppa -y
-RUN sudo apt-get update
-RUN sudo apt-get -y install  git
+
+# Setup all needed dependencies
+RUN apt-get update
+RUN apt-get -y install curl libcurl4-gnutls-dev git libxslt-dev libxml2-dev libpq-dev libffi-dev vim-nox git software-properties-common python-software-properties zsh tmux ctags sudo openssh-server net-tools inetutils-ping xdg-utils ack-grep libnotify-bin mysql-client libmysqlclient-dev ruby-dev git nodejs
 
 # Install locale
 RUN locale-gen es_ES.UTF-8
-
-# Add node repository to sources.list and update apt
-RUN add-apt-repository -y ppa:chris-lea/node.js && apt-get update
-
-# Install node.js
-RUN apt-get -y install nodejs
 
 # Install yeoman
 RUN npm -g install yo
