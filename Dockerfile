@@ -33,19 +33,13 @@ ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/s
 
 # Setup all needed dependencies
 RUN apt-get update
-RUN apt-get -y install curl libcurl4-gnutls-dev git libxslt-dev libxml2-dev libpq-dev libffi-dev vim-nox git software-properties-common python-software-properties zsh tmux ctags sudo openssh-server net-tools inetutils-ping xdg-utils ack-grep libnotify-bin mysql-client libmysqlclient-dev ruby-dev
+RUN apt-get -y install curl libcurl4-gnutls-dev git libxslt-dev libxml2-dev libpq-dev libffi-dev vim-nox git software-properties-common python-software-properties zsh tmux ctags sudo openssh-server net-tools inetutils-ping xdg-utils ack-grep libnotify-bin mysql-client libmysqlclient-dev ruby-dev silversearcher-ag nodejs npm
 
 # Install locale
 RUN locale-gen es_ES.UTF-8
 
 # Add node repository to sources.list and update apt
 RUN add-apt-repository -y ppa:chris-lea/node.js && apt-get update
-
-# Install node.js
-RUN apt-get -y install nodejs
-
-# Install yeoman
-RUN npm -g install yo
 
 RUN mkdir -p /var/log/nginx/
 # Install rvm, ruby, rails, rubygems, nginx
@@ -67,6 +61,7 @@ ENV PATH $PATH:/home/dev
 ENV TERM screen-256color
 
 # All rvm commands need to be run as bash -l or they won't work.
+RUN /bin/bash -l -c 'gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3'
 RUN \curl -L https://get.rvm.io | bash -s stable
 RUN echo 'source /usr/local/rvm/scripts/rvm' >> ~/bash.bashrc
 USER root
@@ -88,6 +83,17 @@ RUN git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/
 RUN git clone https://github.com/Batou99/dotfiles ~/.vim
 RUN cd ~/.vim/ && ./install.sh
 
+# Prepare for node and npm
+RUN echo prefix = ~/.node >> ~/.npmrc
+echo 'export PATH="$PATH:$HOME/.node/bin"' >> ~/.zshrc
+
+USER root
+RUN apt-get -y install nodejs-legacy
+
+USER dev
+# Install yeoman
+RUN /bin/bash -l -c 'npm -g install yo coffee grunt grunt-cli bower'
+
 # Just to make things safer. 
 ENV RAILS_ENV development
 
@@ -101,3 +107,5 @@ EXPOSE 22
 EXPOSE 80
 
 EXPOSE 443
+
+EXPOSE 9000
